@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   Menu,
   X,
@@ -16,7 +15,7 @@ import {
 import LanguageSwitcher from "./LanguageSwitcher";
 import StoreLocationsModal from "./StoreLocationsModal";
 import ContactModal from "./ContactModal";
-import { useCart } from "./cart/CartProvider";
+import CartIcon from "./navigation/CartIcon";
 
 const menuItems = [
   {
@@ -83,6 +82,7 @@ const TopNavbar = () => {
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [isStoreModalOpen, setIsStoreModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     setExpandedItem(null);
@@ -96,10 +96,10 @@ const TopNavbar = () => {
     <div className="font-['Montserrat'] font-light">
       <nav className="bg-primary px-6 py-4 shadow-md">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
-          <div className="flex items-center gap-4 w-full sm:w-auto">
+          <div className="flex items-center justify-between w-full sm:w-auto">
             <button
               onClick={toggleMenu}
-              className="lg:hidden text-white hover:text-accent transition-colors duration-300 -ml-6"
+              className="lg:hidden text-white hover:text-accent transition-colors duration-300"
               aria-label="Toggle menu"
             >
               {isOpen ? (
@@ -116,25 +116,21 @@ const TopNavbar = () => {
               <MapPin size={18} />
               TROUVER UNE BOUTIQUE
             </button>
+
+            <div className="flex items-center gap-4 sm:hidden">
+              <CartIcon />
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="hidden sm:flex items-center gap-4">
             <button
               onClick={() => setIsContactModalOpen(true)}
-              className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300 mb-2 sm:mb-0 hidden sm:flex"
+              className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300"
             >
               <Phone size={18} />
               CONTACTEZ-NOUS
             </button>
-            <Link 
-          to="/cart" 
-          className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text transition-colors duration-300 relative"
-        >
-          <ShoppingBag size={18} />
-         
-            <span className="absolute -top-2 -right-2 bg-[#fff] text-primary text-xs rounded-full w-4 h-4 flex items-center justify-center">
-             2
-            </span>
-        </Link>
+            <CartIcon />
           </div>
         </div>
       </nav>
