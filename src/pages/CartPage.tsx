@@ -16,11 +16,13 @@ const CartPage = () => {
   const finalTotal = total + shipping;
 
   const handleUpdateQuantity = (id: number, newQuantity: number) => {
-    updateQuantity(id, newQuantity);
-    toast({
-      title: "Panier mis à jour",
-      description: "La quantité a été mise à jour avec succès",
-    });
+    if (newQuantity >= 1) {
+      updateQuantity(id, newQuantity);
+      toast({
+        title: "Panier mis à jour",
+        description: "La quantité a été mise à jour avec succès",
+      });
+    }
   };
 
   const handleRemoveItem = (id: number) => {
@@ -38,7 +40,7 @@ const CartPage = () => {
       <BrandNavbar />
       
       <div className="container mx-auto px-4 py-12 mt-32">
-        <h1 className="text-3xl font-serif text-[#1A1F2C] mb-8">Mon Panier</h1>
+        <h1 className="text-3xl font-serif text-[#1A1F2C] mb-8">Mon Panier ({cartItems.length} articles)</h1>
         
         {cartItems.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-lg shadow-sm">
@@ -72,15 +74,17 @@ const CartPage = () => {
                       <p className="text-[#8E9196] text-sm mb-2">Réf: {item.id.toString().padStart(6, '0')}</p>
                       <div className="flex items-center gap-4">
                         <button
-                          onClick={() => handleUpdateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                           className="text-[#8E9196] hover:text-[#1A1F2C] transition-colors"
+                          aria-label="Diminuer la quantité"
                         >
                           <MinusCircle size={20} />
                         </button>
-                        <span className="w-8 text-center font-medium">{item.quantity}</span>
+                        <span className="w-8 text-center font-medium text-black">{item.quantity}</span>
                         <button
                           onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                           className="text-[#8E9196] hover:text-[#1A1F2C] transition-colors"
+                          aria-label="Augmenter la quantité"
                         >
                           <PlusCircle size={20} />
                         </button>
@@ -93,6 +97,7 @@ const CartPage = () => {
                       <button
                         onClick={() => handleRemoveItem(item.id)}
                         className="text-[#8E9196] hover:text-red-600 transition-colors"
+                        aria-label="Supprimer l'article"
                       >
                         <Trash2 size={20} />
                       </button>
