@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Menu,
   X,
@@ -164,7 +165,7 @@ const TopNavbar = () => {
                   <Link 
                     to={item.link} 
                     className="text-lg font-medium flex-1 text-left group-hover:translate-x-1 transition-transform duration-300"
-                    >
+                  >
                     {item.title}
                   </Link>
                   {item.subItems && (
@@ -178,24 +179,23 @@ const TopNavbar = () => {
                   )}
                 </div>
                 {item.subItems && expandedItem === item.title && (
-  <ul className="ml-4 mt-2 space-y-2 animate-accordion-down">
-    {item.subItems.map((subItem) => (
-      <li 
-        key={subItem.href}
-        className="relative"
-      >
-        <Link
-          to={subItem.href}
-          className="block text-sm py-2 px-4 text-left hover:text-accent transition-colors duration-300 hover:bg-white/5 rounded-md relative pl-6"
-        >
-          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-accent/50"></span>
-          {subItem.title}
-        </Link>
-      </li>
-    ))}
-  </ul>
-)}
-
+                  <ul className="ml-4 mt-2 space-y-2 animate-accordion-down">
+                    {item.subItems.map((subItem) => (
+                      <li 
+                        key={subItem.href}
+                        className="relative"
+                      >
+                        <Link
+                          to={subItem.href}
+                          className="block text-sm py-2 px-4 text-left hover:text-accent transition-colors duration-300 hover:bg-white/5 rounded-md relative pl-6"
+                        >
+                          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-accent/50"></span>
+                          {subItem.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
