@@ -4,14 +4,33 @@ import { MinusCircle, PlusCircle, Trash2, CreditCard, Wallet, ShoppingBag } from
 import { useNavigate } from 'react-router-dom';
 import TopNavbar from '../components/TopNavbar';
 import BrandNavbar from '../components/BrandNavbar';
+import { useToast } from "@/hooks/use-toast";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = total > 500 ? 0 : 7;
   const finalTotal = total + shipping;
+
+  const handleUpdateQuantity = (id: number, newQuantity: number) => {
+    updateQuantity(id, newQuantity);
+    toast({
+      title: "Panier mis à jour",
+      description: "La quantité a été mise à jour avec succès",
+    });
+  };
+
+  const handleRemoveItem = (id: number) => {
+    removeFromCart(id);
+    toast({
+      title: "Article supprimé",
+      description: "L'article a été retiré du panier",
+      variant: "destructive",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#F1F0FB]">
@@ -53,14 +72,14 @@ const CartPage = () => {
                       <p className="text-[#8E9196] text-sm mb-2">Réf: {item.id.toString().padStart(6, '0')}</p>
                       <div className="flex items-center gap-4">
                         <button
-                          onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                          onClick={() => handleUpdateQuantity(item.id, Math.max(0, item.quantity - 1))}
                           className="text-[#8E9196] hover:text-[#1A1F2C] transition-colors"
                         >
                           <MinusCircle size={20} />
                         </button>
                         <span className="w-8 text-center font-medium">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                           className="text-[#8E9196] hover:text-[#1A1F2C] transition-colors"
                         >
                           <PlusCircle size={20} />
@@ -72,7 +91,7 @@ const CartPage = () => {
                         € {(item.price * item.quantity).toFixed(2)}
                       </div>
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => handleRemoveItem(item.id)}
                         className="text-[#8E9196] hover:text-red-600 transition-colors"
                       >
                         <Trash2 size={20} />
