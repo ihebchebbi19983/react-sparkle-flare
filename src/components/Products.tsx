@@ -7,29 +7,27 @@ import {
   CarouselPrevious,
 } from "../components/ui/carousel";
 import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from './ProductCard';
 import Categories from './Categories';
+import { useQuery } from '@tanstack/react-query';
+import { fetchAllProducts } from '../services/productsApi';
+import { Skeleton } from './ui/skeleton';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
-const products = [
-  { id: 1, name: 'Suit', material: 'WOOL', color: 'Midnight Blue', price: 1295, image: "/Articles/1.png" },
-  { id: 2, name: 'Basic shirt', material: 'oxford', color: 'White & Blue', price: 120, image: "/Articles/2.png" },
-  { id: 3, name: 'Limited pink shirt', material: 'Pink October', color: 'White & pink', price: 180, image: "/Articles/3.png" },
-  { id: 4, name: 'Classic White Shirt', material: 'Cotton', color: 'Pure White', price: 150, image: "/Articles/1.png" },
-  { id: 5, name: 'Modern Blazer', material: 'Wool Blend', color: 'Charcoal Grey', price: 450, image: "/Articles/2.png" },
-  { id: 6, name: 'Summer Polo', material: 'Cotton Pique', color: 'Navy Blue', price: 95, image: "/Articles/3.png" },
-  { id: 7, name: 'Business Suit', material: 'Italian Wool', color: 'Black', price: 1500, image: "/Articles/1.png" },
-  { id: 8, name: 'Casual Shirt', material: 'Linen', color: 'Light Blue', price: 110, image: "/Articles/2.png" },
-  { id: 9, name: 'Designer Blazer', material: 'Premium Wool', color: 'Dark Grey', price: 750, image: "/Articles/3.png" },
-];
 
 const Products = () => {
   const [emblaRef] = useEmblaCarousel(
     { loop: true, align: 'start', skipSnaps: false, dragFree: false },
-    
   );
+
+  const { data: products, isLoading, error } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchAllProducts,
+  });
+
+  if (error) {
+    console.error('Error loading products:', error);
+    return <div className="text-center text-red-500">Failed to load products</div>;
+  }
 
   return (
     <div className="w-full overflow-hidden bg-gray-50">
@@ -41,11 +39,20 @@ const Products = () => {
         <div className="relative w-full" ref={emblaRef}>
           <Carousel className="w-full">
             <CarouselContent>
-              {products.map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                  <ProductCard product={product} />
-                </CarouselItem>
-              ))}
+              {isLoading ? (
+                // Loading skeleton
+                Array.from({ length: 6 }).map((_, index) => (
+                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                    <div className="h-[400px] bg-gray-100 rounded-lg animate-pulse" />
+                  </CarouselItem>
+                ))
+              ) : (
+                products?.map((product) => (
+                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 pl-4">
+                    <ProductCard product={product} />
+                  </CarouselItem>
+                ))
+              )}
             </CarouselContent>
             <CarouselPrevious
               aria-label="Previous Slide"
